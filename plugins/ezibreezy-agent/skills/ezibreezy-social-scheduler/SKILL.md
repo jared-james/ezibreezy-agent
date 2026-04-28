@@ -9,8 +9,8 @@ Use this skill to operate EziBreezy safely through the repo-supported automation
 
 ## Operating Order
 
-1. Run `ezibreezy auth:status` before EziBreezy work.
-2. If the hosted EziBreezy MCP server is already connected in the current agent environment, prefer MCP tools for supported agent-native reads and low-risk mutations.
+1. If the hosted EziBreezy MCP server is already connected in the current agent environment, start supported reads with MCP tools such as `list_workspaces` instead of opening the CLI path first.
+2. Run `ezibreezy auth:status` before CLI or direct API fallback work.
 3. Prefer the EziBreezy CLI when MCP is not connected, when the workflow is not covered by MCP, or when local files/full CLI behavior are needed.
 4. Use direct public API calls only when MCP and the CLI cannot perform the task.
 5. Prefer environment credentials such as `EZIBREEZY_API_KEY`; never ask users to paste API keys, login tokens, presigned URLs, or raw provider payloads into chat.
@@ -28,6 +28,7 @@ Before creating, scheduling, publishing, or updating content:
 ## Mutation Defaults
 
 - Create drafts by default. For content creation, set `saveAsDraft: true` unless the user explicitly asked to schedule or publish.
+- When MCP is connected, use `create_draft_content` for supported draft creation after workspace, integration, capabilities, and needed options are resolved; use CLI `content:create` as the fallback.
 - Do not schedule unless the user provides an explicit date, time, and timezone.
 - Do not publish immediately unless the user explicitly requests publish-now behavior in the current task.
 - Upload or select media through EziBreezy before attaching it to content.
@@ -47,6 +48,8 @@ Require explicit confirmation immediately before any action that is externally v
 - Generate or export analytics reports that may create files, notify users, or consume plan-limited resources.
 
 If confirmation is missing, summarize the exact action, target IDs, workspace, integration, and expected external effect, then ask for confirmation before proceeding.
+
+For MCP high-risk tools, pass the documented exact `confirmationText` only after the user confirms the current action and target. For CLI fallbacks, append `--yes` only after the same confirmation.
 
 ## References
 
