@@ -2,7 +2,6 @@ interface:
   display_name: "EziBreezy Social Scheduler"
   short_description: "Automate EziBreezy social workflows safely"
   brand_color: "#2563EB"
-  default_prompt: "Use $ezibreezy-social-scheduler to discover my EziBreezy workspace, inspect connected integrations, and create a draft social post."
+  default_prompt: "Use $ezibreezy-social-scheduler to discover my EziBreezy workspace, inspect connected integrations, and create a draft social post using connected MCP tools when available or the CLI fallback otherwise."
 policy:
   allow_implicit_invocation: true
-

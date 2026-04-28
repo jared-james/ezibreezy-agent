@@ -10,9 +10,9 @@ Use this skill to operate EziBreezy safely through the repo-supported automation
 ## Operating Order
 
 1. Run `ezibreezy auth:status` before EziBreezy work.
-2. Prefer the EziBreezy CLI for reads and mutations.
-3. Use direct public API calls only when the CLI cannot perform the task.
-4. Use MCP tools only when they are already connected in the current agent environment.
+2. If the hosted EziBreezy MCP server is already connected in the current agent environment, prefer MCP tools for supported agent-native reads and low-risk mutations.
+3. Prefer the EziBreezy CLI when MCP is not connected, when the workflow is not covered by MCP, or when local files/full CLI behavior are needed.
+4. Use direct public API calls only when MCP and the CLI cannot perform the task.
 5. Prefer environment credentials such as `EZIBREEZY_API_KEY`; never ask users to paste API keys, login tokens, presigned URLs, or raw provider payloads into chat.
 
 ## Discovery Workflow
@@ -55,5 +55,6 @@ Load only the reference needed for the current task:
 - `references/command-reference.md` for CLI command groups and recommended sequences.
 - `references/content-payloads.md` for JSON payload shapes, timezone handling, UUID fields, and examples.
 - `references/integration-capabilities.md` for platform requirements, capability fields, media limits, and dynamic options.
+- `references/mcp-tools.md` for hosted MCP setup, supported MCP tools, and CLI fallbacks.
 - `references/safety-policy.md` for confirmation boundaries and credential handling.
 - `references/troubleshooting.md` for auth, validation, integration, timezone, plan, rate-limit, and provider errors.

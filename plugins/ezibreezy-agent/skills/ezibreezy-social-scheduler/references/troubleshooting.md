@@ -37,6 +37,8 @@ ezibreezy auth:login
 
 Browser login tokens expire after 7 days and are stored per API URL.
 
+For hosted MCP, verify that `EZIBREEZY_API_KEY` is set in the shell or client secret storage used by the MCP client. Do not put the key in `.mcp.json`, `config.toml`, command history, screenshots, or chat.
+
 ## Missing Workspace
 
 Run:

@@ -1,10 +1,12 @@
 # EziBreezy Agent
 
-Installable agent skills and plugins for safely operating EziBreezy through the public API and `@ezibreezy/cli`.
+Installable agent skills and plugins for safely operating EziBreezy through the public API, `@ezibreezy/cli`, and the optional hosted MCP endpoint.
 
 This package includes the `ezibreezy-social-scheduler` skill for social scheduling, publishing, content management, media library work, approvals, analytics, inbox, grid planning, hashtags, taxonomy, and automation workflows.
 
 Tested with `@ezibreezy/cli >= 0.8.3`.
+
+Hosted MCP compatibility: `https://api.ezibreezy.com/mcp` with bearer API key auth. The hosted MCP endpoint is optional and is not a replacement for the CLI.
 
 ## What This Installs
 
@@ -12,7 +14,7 @@ Tested with `@ezibreezy/cli >= 0.8.3`.
 - A Codex plugin manifest for installing the skill in Codex.
 - A Claude Code plugin manifest and marketplace for installing the skill in Claude Code.
 
-The plugin is CLI-first. It does not include secrets and does not need access to the private EziBreezy application repositories.
+The plugin is CLI-first by default. MCP can be connected separately for clients that support Streamable HTTP MCP servers. This repo does not include secrets and does not need access to the private EziBreezy application repositories.
 
 ## Prerequisites
 
@@ -45,6 +47,68 @@ $env:EZIBREEZY_API_URL="https://api.ezibreezy.com"
 ```
 
 Do not put raw API keys in URLs, prompts, git history, or shared chat.
+
+## Hosted MCP Setup
+
+EziBreezy exposes an optional hosted MCP endpoint for agent-native tool calls:
+
+```text
+https://api.ezibreezy.com/mcp
+```
+
+Use an EziBreezy API key through `EZIBREEZY_API_KEY`. Store the key in your shell environment or client secret storage, not in shared project files.
+
+macOS / Linux:
+
+```bash
+export EZIBREEZY_API_KEY="ezb_live_..."
+```
+
+PowerShell:
+
+```powershell
+$env:EZIBREEZY_API_KEY="ezb_live_..."
+```
+
+Codex config:
+
+```toml
+[mcp_servers.ezibreezy]
+url = "https://api.ezibreezy.com/mcp"
+bearer_token_env_var = "EZIBREEZY_API_KEY"
+```
+
+Claude Code local setup:
+
+```bash
+claude mcp add --transport http ezibreezy https://api.ezibreezy.com/mcp \
+  --header "Authorization: Bearer $EZIBREEZY_API_KEY"
+```
+
+Claude project `.mcp.json` example:
+
+```json
+{
+  "mcpServers": {
+    "ezibreezy": {
+      "type": "http",
+      "url": "https://api.ezibreezy.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${EZIBREEZY_API_KEY}"
+      }
+    }
+  }
+}
+```
+
+This plugin does not auto-install the MCP server yet. Configure MCP explicitly so installs do not fail on machines that have not set `EZIBREEZY_API_KEY`.
+
+## Hosted MCP Vs CLI
+
+- Use MCP when your agent client already has `ezibreezy` connected and you want agent-native reads or low-risk actions such as listing workspaces, inspecting integrations, creating drafts, scheduling explicit posts, upload-session media workflows, analytics summaries, or inbox thread reads.
+- Use the CLI for the broadest supported surface, local files, full media upload commands, taxonomy, hashtags, grid planner, approvals, reports, and any workflow where MCP is not connected.
+- Use the public API directly only when the CLI and MCP do not cover the required workflow.
+- Do not use stored browser CLI tokens as the recommended MCP auth path; use `EZIBREEZY_API_KEY`.
 
 ## Install In Codex
 
@@ -120,9 +184,13 @@ npx @ezibreezy/cli content:create --workspace <workspaceId> --json create-conten
 
 The skill defaults to drafts, inspects workspace and integration capabilities before mutations, and requires explicit confirmation before externally visible, destructive, or broad actions.
 
+## MCP Tool Coverage
+
+See `plugins/ezibreezy-agent/skills/ezibreezy-social-scheduler/references/mcp-tools.md` for the current hosted MCP tool map and CLI/API fallbacks.
+
 ## Links
 
 - API docs: https://api.ezibreezy.com/docs
+- Hosted MCP: https://api.ezibreezy.com/mcp
 - CLI package: https://www.npmjs.com/package/@ezibreezy/cli
 - EziBreezy: https://ezibreezy.com
-

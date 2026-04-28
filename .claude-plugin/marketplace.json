@@ -4,15 +4,15 @@
     "name": "LILY DIA PTY LTD"
   },
   "metadata": {
-    "description": "EziBreezy social scheduling and automation skills for Claude Code.",
-    "version": "0.1.0"
+    "description": "EziBreezy social scheduling and automation skills for Claude Code, with optional hosted MCP setup docs.",
+    "version": "0.2.0"
   },
   "plugins": [
     {
       "name": "ezibreezy-agent",
       "source": "./plugins/ezibreezy-agent",
-      "description": "Operate EziBreezy safely through the CLI and public API.",
-      "version": "0.1.0",
+      "description": "Operate EziBreezy safely through the CLI, public API, and optional hosted MCP.",
+      "version": "0.2.0",
       "author": {
         "name": "LILY DIA PTY LTD"
       },
@@ -20,8 +20,7 @@
       "repository": "https://github.com/jared-james/ezibreezy-agent",
       "license": "MIT",
       "category": "Productivity",
-      "tags": ["ezibreezy", "social-media", "automation", "cli", "agent-skills"]
+      "tags": ["ezibreezy", "social-media", "automation", "cli", "mcp", "agent-skills"]
     }
   ]
 }
-
