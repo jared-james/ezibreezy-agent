@@ -1,6 +1,6 @@
 {
   "name": "ezibreezy-agent",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Operate EziBreezy safely through the CLI, public API, and browser-authenticated hosted MCP.",
   "skills": "./skills/",
   "mcpServers": "./.mcp.json",
