@@ -82,6 +82,7 @@ Prefer draft creation unless the user explicitly asks to schedule or publish:
 ```bash
 ezibreezy content:create --workspace <workspaceId> --json create-content.json
 ezibreezy content:update --workspace <workspaceId> --id <contentId> --json update-content.json
+ezibreezy content:notes --workspace <workspaceId> --id <contentId> --notes "<p>Planning notes</p>"
 ezibreezy content:workflow --workspace <workspaceId> --id <contentId> --status drafting
 ezibreezy media:upload ./image.png --workspace <workspaceId>
 ezibreezy media:update --workspace <workspaceId> --id <mediaId> --json media-update.json

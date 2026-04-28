@@ -42,6 +42,7 @@ Do not paste API keys, bearer tokens, presigned URLs, or provider payloads into 
 | `list_taxonomy` | `ezibreezy taxonomy:tags --workspace <workspaceId>`, `taxonomy:pillars`, `taxonomy:formats` | Read-only tags, pillars, and formats for planning. |
 | `list_hashtag_groups` | `ezibreezy hashtags:list --workspace <workspaceId>` | Read-only saved hashtag groups. |
 | `schedule_content` | `ezibreezy content:schedule --workspace <workspaceId> --id <contentId> --scheduled-at <isoWithTimezone>` | Requires explicit ISO 8601 timezone such as `2026-05-01T10:00:00+10:00`. |
+| `update_content_notes` | `ezibreezy content:notes --workspace <workspaceId> --id <contentId> --notes <html>` | Replaces the rich-text notes attached to a content item. Notes are internal — never published. Pass an empty string to clear. |
 | `upload_media` | `ezibreezy media:upload <file> --workspace <workspaceId>` | MCP creates an upload session; client uploads bytes, then calls `complete_media_upload`. |
 | `complete_media_upload` | `ezibreezy media:upload <file> --workspace <workspaceId>` | Finalizes an MCP upload session. |
 | `get_media` | `ezibreezy media:get --workspace <workspaceId> --id <mediaId>` | Read-only safe media metadata. |

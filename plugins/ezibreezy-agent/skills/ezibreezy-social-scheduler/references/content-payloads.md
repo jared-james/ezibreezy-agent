@@ -74,6 +74,7 @@ Supported content fields:
 - `integrationId`: required UUID.
 - `body`: required string, 1 to 25000 characters.
 - `title`: optional string, max 500 characters.
+- `notes`: optional rich-text HTML, max 100000 characters. Internal — never published. Use to attach planning context, links, or meeting notes to a content item.
 - `captions`: optional object.
 - `mediaIds`: optional UUID array, max 10.
 - `scheduledAt`: optional ISO 8601 with timezone.
