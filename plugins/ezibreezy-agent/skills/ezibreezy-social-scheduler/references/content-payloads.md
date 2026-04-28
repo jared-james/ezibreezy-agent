@@ -132,10 +132,10 @@ Equivalent payload shape:
 Publishing uses an existing content ID, not a JSON payload:
 
 ```bash
-ezibreezy content:publish --workspace <workspaceId> --id <contentId>
+ezibreezy content:publish --workspace <workspaceId> --id <contentId> --yes
 ```
 
-Confirm first because this is externally visible.
+Confirm first because this is externally visible. The CLI requires `--yes` for publish-now.
 
 ## Media
 

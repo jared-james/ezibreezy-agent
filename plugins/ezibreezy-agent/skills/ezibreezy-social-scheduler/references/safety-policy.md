@@ -45,6 +45,7 @@ Only append `--yes` after confirmation for:
 
 - `content:request-approval`
 - `content:resubmit`
+- `content:publish`
 - `client-reviews:send`
 - `client-reviews:resend`
 - `analytics:report`

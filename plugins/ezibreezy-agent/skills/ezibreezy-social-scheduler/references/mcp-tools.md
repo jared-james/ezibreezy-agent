@@ -52,7 +52,7 @@ Do not paste API keys, bearer tokens, presigned URLs, or provider payloads into 
 | `list_inbox_threads` | `ezibreezy inbox:threads --workspace <workspaceId>` | Read-only thread summaries. Does not mark read, reply, moderate, retry, or delete. |
 | `get_inbox_thread_messages` | `ezibreezy inbox:messages --workspace <workspaceId> --thread <threadId>` | Read-only sanitized thread detail and messages. Does not mark read. |
 | `get_inbox_stats` | `ezibreezy inbox:stats --workspace <workspaceId>` | Read-only inbox counts. |
-| `publish_now` | `ezibreezy content:publish --workspace <workspaceId> --id <contentId>` | High-risk external action. Requires `confirmationText: "publish_now:<contentId>"` or server-enabled dangerous auto-confirm. |
+| `publish_now` | `ezibreezy content:publish --workspace <workspaceId> --id <contentId> --yes` | High-risk external action. Requires `confirmationText: "publish_now:<contentId>"` or server-enabled dangerous auto-confirm. |
 | `reply_to_inbox_thread` | `ezibreezy inbox:reply --workspace <workspaceId> --thread <threadId> --json reply.json --yes` | High-risk external action. Requires `confirmationText: "inbox_reply:<threadId>"` or server-enabled dangerous auto-confirm. |
 
 ## High-Risk Confirmation
