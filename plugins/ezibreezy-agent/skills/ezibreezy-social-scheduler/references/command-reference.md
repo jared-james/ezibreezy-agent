@@ -108,11 +108,11 @@ These need explicit user intent. Scheduling also needs date, time, and timezone:
 
 ```bash
 ezibreezy content:schedule --workspace <workspaceId> --id <contentId> --scheduled-at "2026-05-01T10:00:00+10:00"
-ezibreezy content:publish --workspace <workspaceId> --id <contentId>
+ezibreezy content:publish --workspace <workspaceId> --id <contentId> --yes
 ezibreezy content:retry --workspace <workspaceId> --id <contentId>
 ```
 
-`content:publish` and `content:retry` do not require `--yes` in the CLI, but agents should still confirm because they can publish externally.
+`content:publish` requires CLI `--yes`. `content:retry` does not require `--yes` in the CLI, but agents should still confirm because it can publish externally.
 
 ## Destructive Or Broad Actions
 
@@ -140,6 +140,7 @@ ezibreezy grid:remove-cover --workspace <workspaceId> --item <itemId>
 CLI-enforced `--yes`:
 
 ```bash
+ezibreezy content:publish --workspace <workspaceId> --id <contentId> --yes
 ezibreezy media:bulk-delete --workspace <workspaceId> --json media-ids.json --yes
 ezibreezy inbox:read-all --workspace <workspaceId> --json inbox-read-all.json --yes
 ezibreezy inbox:reply --workspace <workspaceId> --thread <threadId> --json inbox-reply.json --yes
@@ -254,7 +255,7 @@ Goal: handle publish-now, retry, archive, restore, and delete without accidental
 
 1. Read the content with `content:get`.
 2. Confirm workspace, integration, content ID, current status, and desired action.
-3. For publish-now, confirm explicit current-task intent, then run `content:publish`.
+3. For publish-now, confirm explicit current-task intent, then run `content:publish --yes`.
 4. For retry, confirm external retry intent, then run `content:retry`.
 5. For archive/restore/delete, confirm the exact content ID and effect, then run the matching command.
 6. Return resulting status or deletion marker, content ID, workspace, integration, and any provider error.
