@@ -34,21 +34,37 @@ Do not paste API keys, bearer tokens, presigned URLs, or provider payloads into 
 | `create_draft_content` | `ezibreezy content:create --workspace <workspaceId> --json create-content.json` | MCP forces draft behavior. CLI payload should set `saveAsDraft: true`. |
 | `list_content` | `ezibreezy content:list --workspace <workspaceId>` | Read-only public content statuses. |
 | `get_content` | `ezibreezy content:get --workspace <workspaceId> --id <contentId>` | Read-only sanitized content detail. |
+| `list_taxonomy` | `ezibreezy taxonomy:tags --workspace <workspaceId>`, `taxonomy:pillars`, `taxonomy:formats` | Read-only tags, pillars, and formats for planning. |
+| `list_hashtag_groups` | `ezibreezy hashtags:list --workspace <workspaceId>` | Read-only saved hashtag groups. |
 | `schedule_content` | `ezibreezy content:schedule --workspace <workspaceId> --id <contentId> --scheduled-at <isoWithTimezone>` | Requires explicit ISO 8601 timezone such as `2026-05-01T10:00:00+10:00`. |
 | `upload_media` | `ezibreezy media:upload <file> --workspace <workspaceId>` | MCP creates an upload session; client uploads bytes, then calls `complete_media_upload`. |
 | `complete_media_upload` | `ezibreezy media:upload <file> --workspace <workspaceId>` | Finalizes an MCP upload session. |
 | `get_media` | `ezibreezy media:get --workspace <workspaceId> --id <mediaId>` | Read-only safe media metadata. |
 | `get_media_view_url` | `ezibreezy media:view-url --workspace <workspaceId> --id <mediaId>` | Treat returned URLs as sensitive and short-lived. |
+| `list_grid_items` | `ezibreezy grid:list --workspace <workspaceId> --integration <integrationId>` | Read-only grid planner items. Does not promote, reorder, or delete. |
 | `get_analytics_summary` | `ezibreezy analytics:summary --workspace <workspaceId> --days 30` | Read-only sanitized metrics. Does not generate PDF reports. |
 | `list_inbox_threads` | `ezibreezy inbox:threads --workspace <workspaceId>` | Read-only thread summaries. Does not mark read, reply, moderate, retry, or delete. |
+| `get_inbox_thread_messages` | `ezibreezy inbox:messages --workspace <workspaceId> --thread <threadId>` | Read-only sanitized thread detail and messages. Does not mark read. |
+| `get_inbox_stats` | `ezibreezy inbox:stats --workspace <workspaceId>` | Read-only inbox counts. |
+| `publish_now` | `ezibreezy content:publish --workspace <workspaceId> --id <contentId>` | High-risk external action. Requires `confirmationText: "publish_now:<contentId>"` or server-enabled dangerous auto-confirm. |
+| `reply_to_inbox_thread` | `ezibreezy inbox:reply --workspace <workspaceId> --thread <threadId> --json reply.json --yes` | High-risk external action. Requires `confirmationText: "inbox_reply:<threadId>"` or server-enabled dangerous auto-confirm. |
+
+## High-Risk Confirmation
+
+High-risk MCP tools require exact confirmation text unless server-side dangerous auto-confirm is enabled for that action.
+
+- `publish_now`: pass `confirmationText` as `publish_now:<contentId>`.
+- `reply_to_inbox_thread`: pass `confirmationText` as `inbox_reply:<threadId>`.
+- `dangerouslyAutoConfirm: true` is only honored when server policy allows the action, such as `EZIBREEZY_MCP_DANGEROUS_AUTO_CONFIRM_ACTIONS=publish_now,inbox_reply`.
+- Tool input alone must not be treated as user permission. If confirmation is missing, ask the user to confirm the exact action and target.
 
 ## Not In MCP V1
 
 Use CLI or API fallback, with the safety policy, for:
 
-- Taxonomy, hashtags, grid planner, approvals, client reviews, and analytics report generation.
-- Inbox messages, notes, replies, read-state mutations, moderation, retries, and deletes.
-- Publish-now, retry publishing, delete/archive/restore content, boost/ad-spend tools, or broad media mutations.
+- Approval/client-review reads and analytics report generation.
+- Inbox notes, read-state mutations, moderation, retries, and deletes.
+- Retry publishing, delete/archive/restore content, boost/ad-spend tools, or broad media mutations.
 
 ## Example Sequence
 
