@@ -10,12 +10,13 @@ https://api.ezibreezy.com/mcp
 
 Authentication:
 
-- Preferred: use your MCP client's **Authenticate** flow. It opens EziBreezy in the browser and asks the user to approve access.
+- Preferred: use your MCP client's **Authenticate** flow. It opens EziBreezy in the browser and asks the user to approve access. This has been validated with Codex and Claude Code.
+- Browser-approved MCP access uses 6-hour access tokens with 90-day rotating refresh tokens. Organization admins can revoke active AI tool connections in EziBreezy **Settings -> Developer**.
 - Fallback: use `EZIBREEZY_API_KEY` only when the MCP client does not support browser authentication, or for server-side automation.
 
 CLI login is separate. `ezibreezy auth:login` signs in the CLI, not MCP.
 
-Do not paste API keys, OAuth codes, bearer tokens, presigned URLs, or provider payloads into chat or project files.
+Do not paste API keys, OAuth codes, bearer tokens, refresh tokens, presigned URLs, or provider payloads into chat or project files.
 
 ## Operating Order
 

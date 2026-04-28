@@ -1,6 +1,6 @@
 {
   "name": "ezibreezy-agent",
-  "description": "Operate EziBreezy safely through the CLI, public API, and optional hosted MCP.",
+  "description": "Operate EziBreezy safely through the CLI, public API, and browser-authenticated hosted MCP.",
   "version": "0.6.0",
   "author": {
     "name": "LILY DIA PTY LTD"

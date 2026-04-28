@@ -1,6 +1,6 @@
 # EziBreezy Agent
 
-Installable agent skills and plugins for safely operating EziBreezy through the public API, `@ezibreezy/cli`, and the optional hosted MCP endpoint.
+Installable agent skills and plugins for safely operating EziBreezy through the public API, `@ezibreezy/cli`, and the hosted MCP endpoint.
 
 This package includes the `ezibreezy-social-scheduler` skill for social scheduling, publishing, content management, media library work, approvals, analytics, inbox, grid planning, hashtags, taxonomy, and automation workflows.
 
@@ -59,7 +59,7 @@ https://api.ezibreezy.com/mcp
 
 The plugin bundles the current MCP server config in `plugins/ezibreezy-agent/.mcp.json`, so installing the plugin in Claude Code or Codex auto-wires the server. Open your MCP client and choose **Authenticate** for EziBreezy. Your browser opens EziBreezy, asks for approval, and returns to the MCP client.
 
-MCP browser tokens are short-lived. If the client asks you to sign in again later, choose **Authenticate** again.
+MCP browser authentication has been validated with Codex and Claude Code. EziBreezy issues 6-hour access tokens and 90-day rotating refresh tokens, so approved clients can stay connected without copying secrets. Organization admins can revoke active AI tool connections from EziBreezy **Settings -> Developer**.
 
 ### Manual Setup
 
@@ -130,6 +130,7 @@ Do not put raw API keys in URLs, prompts, git history, shared project files, scr
 - Use the CLI for the broadest supported surface, local files, full media upload commands, taxonomy, hashtags, grid planner, approvals, reports, and any workflow where MCP is not connected.
 - Use the public API directly only when the CLI and MCP do not cover the required workflow.
 - CLI login and MCP login are separate. `ezibreezy auth:login` signs in the CLI only. MCP uses browser sign-in through your MCP client, or the API-key fallback above.
+- Browser-approved MCP connections can be revoked in EziBreezy **Settings -> Developer**. Reconnect from the MCP client with **Authenticate** if access is revoked or expires.
 
 ## Install In Codex
 

@@ -4,14 +4,14 @@
     "name": "LILY DIA PTY LTD"
   },
   "metadata": {
-    "description": "EziBreezy social scheduling and automation skills for Claude Code, with optional hosted MCP setup docs.",
+    "description": "EziBreezy social scheduling and automation skills for Claude Code, with browser-authenticated hosted MCP.",
     "version": "0.6.0"
   },
   "plugins": [
     {
       "name": "ezibreezy-agent",
       "source": "./plugins/ezibreezy-agent",
-      "description": "Operate EziBreezy safely through the CLI, public API, and optional hosted MCP.",
+      "description": "Operate EziBreezy safely through the CLI, public API, and browser-authenticated hosted MCP.",
       "version": "0.6.0",
       "author": {
         "name": "LILY DIA PTY LTD"

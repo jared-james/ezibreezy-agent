@@ -1,7 +1,7 @@
 {
   "name": "ezibreezy-agent",
   "version": "0.6.0",
-  "description": "Operate EziBreezy safely through the CLI, public API, and optional hosted MCP.",
+  "description": "Operate EziBreezy safely through the CLI, public API, and browser-authenticated hosted MCP.",
   "skills": "./skills/",
   "mcpServers": "./.mcp.json",
   "homepage": "https://ezibreezy.com",
@@ -11,7 +11,7 @@
   "interface": {
     "displayName": "EziBreezy Agent",
     "shortDescription": "Safe EziBreezy social automation",
-    "longDescription": "Install EziBreezy social scheduling skills with CLI-first workflows and optional hosted MCP setup instructions.",
+    "longDescription": "Install EziBreezy social scheduling skills with CLI-first workflows and OAuth-capable hosted MCP setup for Codex, Claude Code, and compatible agent clients.",
     "developerName": "LILY DIA PTY LTD",
     "category": "Productivity",
     "capabilities": ["Read", "Write"],

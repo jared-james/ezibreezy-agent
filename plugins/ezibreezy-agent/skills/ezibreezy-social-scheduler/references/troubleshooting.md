@@ -37,7 +37,9 @@ ezibreezy auth:login
 
 Browser login tokens expire after 7 days and are stored per API URL.
 
-For hosted MCP, first use the MCP client's **Authenticate** action. It should open EziBreezy in the browser, ask the user to approve access, and return to the MCP client.
+For hosted MCP, first use the MCP client's **Authenticate** action. It should open EziBreezy in the browser, ask the user to approve access, and return to the MCP client. Browser-authenticated MCP has been validated with Codex and Claude Code.
+
+MCP access tokens last 6 hours and refresh through 90-day rotating refresh tokens. If an MCP client cannot refresh, was revoked, or asks for approval again, choose **Authenticate** again. Organization admins can revoke active AI tool connections in EziBreezy **Settings -> Developer**.
 
 If browser auth is not supported by the MCP client, use the API-key fallback. Set `EZIBREEZY_API_KEY` in the shell or client secret storage. Do not put the key in `.mcp.json`, `config.toml`, command history, screenshots, or chat.
 
