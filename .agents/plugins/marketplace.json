@@ -1,0 +1,21 @@
+{
+  "name": "ezibreezy-agent",
+  "interface": {
+    "displayName": "EziBreezy Agent"
+  },
+  "plugins": [
+    {
+      "name": "ezibreezy-agent",
+      "source": {
+        "source": "local",
+        "path": "./plugins/ezibreezy-agent"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
+
