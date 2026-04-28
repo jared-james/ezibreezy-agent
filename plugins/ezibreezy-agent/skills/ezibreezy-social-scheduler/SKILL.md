@@ -13,7 +13,7 @@ Use this skill to operate EziBreezy safely through the repo-supported automation
 2. Run `ezibreezy auth:status` before CLI or direct API fallback work.
 3. Prefer the EziBreezy CLI when MCP is not connected, when the workflow is not covered by MCP, or when local files/full CLI behavior are needed.
 4. Use direct public API calls only when MCP and the CLI cannot perform the task.
-5. Prefer environment credentials such as `EZIBREEZY_API_KEY`; never ask users to paste API keys, login tokens, presigned URLs, or raw provider payloads into chat.
+5. Prefer the MCP client's browser authentication when MCP is available. Use environment credentials such as `EZIBREEZY_API_KEY` for CLI/API automation or MCP fallback. Never ask users to paste API keys, login tokens, OAuth codes, presigned URLs, or raw provider payloads into chat.
 
 ## Discovery Workflow
 

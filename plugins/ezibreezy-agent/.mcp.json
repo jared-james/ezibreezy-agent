@@ -2,10 +2,7 @@
   "mcpServers": {
     "ezibreezy": {
       "type": "http",
-      "url": "https://api.ezibreezy.com/mcp",
-      "headers": {
-        "Authorization": "Bearer ${EZIBREEZY_API_KEY}"
-      }
+      "url": "https://api.ezibreezy.com/mcp"
     }
   }
 }

@@ -6,7 +6,7 @@ This package includes the `ezibreezy-social-scheduler` skill for social scheduli
 
 Tested with `@ezibreezy/cli >= 0.8.3`.
 
-Hosted MCP compatibility: `https://api.ezibreezy.com/mcp` with bearer API key auth. The hosted MCP endpoint is optional and is not a replacement for the CLI.
+Hosted MCP compatibility: `https://api.ezibreezy.com/mcp` with browser sign-in for OAuth-capable MCP clients. API-key auth is still available as a fallback for automation and older clients.
 
 ## What This Installs
 
@@ -20,7 +20,8 @@ The plugin is CLI-first by default. MCP can be connected separately for clients 
 
 - Node.js 22 or newer.
 - An EziBreezy account with access to at least one workspace.
-- Either an EziBreezy API key or a browser-approved CLI login.
+- For CLI use: either an EziBreezy API key or a browser-approved CLI login.
+- For MCP use: an MCP client that supports browser authentication, or an API key for fallback setup.
 
 Check the CLI:
 
@@ -56,7 +57,43 @@ EziBreezy exposes a hosted MCP endpoint for agent-native tool calls:
 https://api.ezibreezy.com/mcp
 ```
 
-From v0.4.0 the plugin bundles the current MCP server config in `plugins/ezibreezy-agent/.mcp.json`, so installing the plugin in Claude Code or Codex auto-wires the server. You only need to set `EZIBREEZY_API_KEY` in the environment that launches your agent client.
+The plugin bundles the current MCP server config in `plugins/ezibreezy-agent/.mcp.json`, so installing the plugin in Claude Code or Codex auto-wires the server. Open your MCP client and choose **Authenticate** for EziBreezy. Your browser opens EziBreezy, asks for approval, and returns to the MCP client.
+
+MCP browser tokens are short-lived. If the client asks you to sign in again later, choose **Authenticate** again.
+
+### Manual Setup
+
+If you are not using the plugin, configure MCP directly.
+
+Codex `~/.codex/config.toml`:
+
+```toml
+[mcp_servers.ezibreezy]
+url = "https://api.ezibreezy.com/mcp"
+```
+
+Claude Code:
+
+```bash
+claude mcp add --transport http ezibreezy https://api.ezibreezy.com/mcp
+```
+
+Or a project `.mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "ezibreezy": {
+      "type": "http",
+      "url": "https://api.ezibreezy.com/mcp"
+    }
+  }
+}
+```
+
+### API-Key Fallback
+
+Use this only when your MCP client does not support browser sign-in yet, or for server-side automation.
 
 macOS / Linux:
 
@@ -70,19 +107,7 @@ PowerShell:
 $env:EZIBREEZY_API_KEY="ezb_live_..."
 ```
 
-To persist on Windows so all new shells inherit it:
-
-```powershell
-[Environment]::SetEnvironmentVariable("EZIBREEZY_API_KEY", "ezb_live_...", "User")
-```
-
-If the env var is unset when the plugin loads, the MCP entry will appear as "needs authentication" rather than failing the install. Set the key, restart your agent client, and the entry connects.
-
-### Manual Setup
-
-If you are not using the plugin, configure MCP directly.
-
-Codex `~/.codex/config.toml`:
+Codex fallback:
 
 ```toml
 [mcp_servers.ezibreezy]
@@ -90,37 +115,21 @@ url = "https://api.ezibreezy.com/mcp"
 bearer_token_env_var = "EZIBREEZY_API_KEY"
 ```
 
-Claude Code:
+Claude Code fallback:
 
 ```bash
 claude mcp add --transport http ezibreezy https://api.ezibreezy.com/mcp \
   --header "Authorization: Bearer $EZIBREEZY_API_KEY"
 ```
 
-Or a project `.mcp.json`:
-
-```json
-{
-  "mcpServers": {
-    "ezibreezy": {
-      "type": "http",
-      "url": "https://api.ezibreezy.com/mcp",
-      "headers": {
-        "Authorization": "Bearer ${EZIBREEZY_API_KEY}"
-      }
-    }
-  }
-}
-```
-
-Do not put raw API keys in URLs, prompts, git history, shared project files, or screenshots.
+Do not put raw API keys in URLs, prompts, git history, shared project files, screenshots, or chat.
 
 ## Hosted MCP Vs CLI
 
 - Use MCP when your agent client already has `ezibreezy` connected and you want agent-native reads or low-risk actions such as listing workspaces, inspecting integrations, creating drafts, scheduling explicit posts, upload-session media workflows, analytics summaries, or inbox thread reads.
 - Use the CLI for the broadest supported surface, local files, full media upload commands, taxonomy, hashtags, grid planner, approvals, reports, and any workflow where MCP is not connected.
 - Use the public API directly only when the CLI and MCP do not cover the required workflow.
-- Do not use stored browser CLI tokens as the recommended MCP auth path; use `EZIBREEZY_API_KEY`.
+- CLI login and MCP login are separate. `ezibreezy auth:login` signs in the CLI only. MCP uses browser sign-in through your MCP client, or the API-key fallback above.
 
 ## Install In Codex
 

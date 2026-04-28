@@ -1,3 +1,2 @@
 [mcp_servers.ezibreezy]
 url = "https://api.ezibreezy.com/mcp"
-bearer_token_env_var = "EZIBREEZY_API_KEY"

@@ -10,11 +10,12 @@ https://api.ezibreezy.com/mcp
 
 Authentication:
 
-```text
-Authorization: Bearer $EZIBREEZY_API_KEY
-```
+- Preferred: use your MCP client's **Authenticate** flow. It opens EziBreezy in the browser and asks the user to approve access.
+- Fallback: use `EZIBREEZY_API_KEY` only when the MCP client does not support browser authentication, or for server-side automation.
 
-Do not paste API keys, bearer tokens, presigned URLs, or provider payloads into chat or project files.
+CLI login is separate. `ezibreezy auth:login` signs in the CLI, not MCP.
+
+Do not paste API keys, OAuth codes, bearer tokens, presigned URLs, or provider payloads into chat or project files.
 
 ## Operating Order
 

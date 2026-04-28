@@ -63,9 +63,11 @@ Some risky commands do not require `--yes`; the agent still must confirm them.
 ## Credential Handling
 
 - Prefer `EZIBREEZY_API_KEY` and `EZIBREEZY_API_URL` environment variables for automation.
-- Use `EZIBREEZY_API_KEY` for hosted MCP authentication; do not use stored browser CLI tokens as the recommended MCP auth path.
+- For hosted MCP, prefer the MCP client's browser authentication flow.
+- Use `EZIBREEZY_API_KEY` for MCP only when browser authentication is not supported or for server-side automation.
+- Do not use stored browser CLI tokens as the MCP auth path.
 - Prefer browser login for local human sessions.
-- Do not ask the user to paste API keys, CLI login tokens, bearer tokens, presigned URLs, provider tokens, scopes, or raw provider payloads into chat.
+- Do not ask the user to paste API keys, CLI login tokens, OAuth codes, bearer tokens, presigned URLs, provider tokens, scopes, or raw provider payloads into chat.
 - Do not print token values from files or command output.
 - Treat media view/download URLs as sensitive, especially if presigned or temporary.
 - If a command output includes sensitive values, summarize the non-sensitive state instead of echoing the raw payload.
