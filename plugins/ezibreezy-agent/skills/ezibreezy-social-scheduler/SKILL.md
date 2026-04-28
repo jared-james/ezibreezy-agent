@@ -22,7 +22,7 @@ Before creating, scheduling, publishing, or updating content:
 1. Identify the workspace with `ezibreezy workspaces:list` or the user-provided workspace ID.
 2. Identify the integration with `ezibreezy integrations:list --workspace <id>`.
 3. Inspect platform requirements with `ezibreezy integrations:capabilities --workspace <id> --integration <id>`.
-4. If a capability field includes a dynamic option key, fetch options with `ezibreezy integrations:options`.
+4. If a capability field includes a dynamic option key, fetch options with MCP `get_integration_options` when connected, or `ezibreezy integrations:options` as the CLI fallback.
 5. Inspect existing media, taxonomy, hashtags, content, analytics, inbox, or grid planner state as needed for the requested workflow.
 
 ## Mutation Defaults

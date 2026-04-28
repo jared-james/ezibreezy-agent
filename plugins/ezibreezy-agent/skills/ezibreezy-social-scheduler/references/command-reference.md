@@ -20,14 +20,16 @@ Start here before any mutation:
 
 ```bash
 ezibreezy auth:status
+ezibreezy auth:login
 ezibreezy auth:whoami
+ezibreezy auth:logout
 ezibreezy workspaces:list
 ezibreezy integrations:list --workspace <workspaceId>
 ezibreezy integrations:capabilities --workspace <workspaceId> --integration <integrationId>
 ezibreezy integrations:options --workspace <workspaceId> --integration <integrationId> --key <optionKey>
 ```
 
-Use `integrations:options --json <file>` when the option key needs input, such as YouTube region, location search, or Instagram catalog/product search.
+Use MCP `get_integration_options` when connected. Use CLI `integrations:options --json <file>` as the fallback when the option key needs input, such as YouTube region, location search, or Instagram catalog/product search.
 
 ## Safe Reads
 
@@ -196,10 +198,11 @@ Use these playbooks when a user asks for a full workflow rather than one command
 Goal: identify the authenticated user and usable workspace.
 
 1. Run `ezibreezy auth:status`.
-2. If signed in, run `ezibreezy auth:whoami`.
-3. Run `ezibreezy workspaces:list`.
-4. If the user did not name a workspace, choose only when there is a single clear workspace; otherwise ask which workspace to use.
-5. Return workspace ID, workspace name if present, auth mode if visible, and any missing-access blocker.
+2. If signed out in a local human session, run `ezibreezy auth:login`; use `EZIBREEZY_API_KEY` for automation.
+3. If signed in, run `ezibreezy auth:whoami`.
+4. Run `ezibreezy workspaces:list`.
+5. If the user did not name a workspace, choose only when there is a single clear workspace; otherwise ask which workspace to use.
+6. Return workspace ID, workspace name if present, auth mode if visible, and any missing-access blocker.
 
 ### Integration Discovery
 
@@ -208,7 +211,7 @@ Goal: identify a connected social account and its platform requirements.
 1. Run `ezibreezy integrations:list --workspace <workspaceId>`.
 2. Filter out integrations with status other than `connected` unless the task is troubleshooting.
 3. Run `ezibreezy integrations:capabilities --workspace <workspaceId> --integration <integrationId>` for the target account.
-4. If any selected settings field has `optionKey`, run `ezibreezy integrations:options`.
+4. If any selected settings field has `optionKey`, call MCP `get_integration_options`, or run `ezibreezy integrations:options` as the CLI fallback.
 5. Return integration ID, platform, username/name, status, post types, media requirements, title requirement, max media, settings fields, and option values used.
 
 ### Media Workflow

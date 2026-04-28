@@ -30,6 +30,7 @@ Do not paste API keys, bearer tokens, presigned URLs, or provider payloads into 
 | `list_workspaces` | `ezibreezy workspaces:list` | Read-only workspace discovery. |
 | `list_integrations` | `ezibreezy integrations:list --workspace <workspaceId>` | Read-only connected account list. |
 | `get_integration_capabilities` | `ezibreezy integrations:capabilities --workspace <workspaceId> --integration <integrationId>` | Required before platform-specific content settings. |
+| `get_integration_options` | `ezibreezy integrations:options --workspace <workspaceId> --integration <integrationId> --key <optionKey>` | Fetches dynamic option keys returned by capabilities, such as boards, creator info, locations, catalogs, products, or YouTube categories. |
 | `create_draft_content` | `ezibreezy content:create --workspace <workspaceId> --json create-content.json` | MCP forces draft behavior. CLI payload should set `saveAsDraft: true`. |
 | `list_content` | `ezibreezy content:list --workspace <workspaceId>` | Read-only public content statuses. |
 | `get_content` | `ezibreezy content:get --workspace <workspaceId> --id <contentId>` | Read-only sanitized content detail. |
@@ -45,7 +46,6 @@ Do not paste API keys, bearer tokens, presigned URLs, or provider payloads into 
 
 Use CLI or API fallback, with the safety policy, for:
 
-- Dynamic integration option lookup such as `integrations:options`.
 - Taxonomy, hashtags, grid planner, approvals, client reviews, and analytics report generation.
 - Inbox messages, notes, replies, read-state mutations, moderation, retries, and deletes.
 - Publish-now, retry publishing, delete/archive/restore content, boost/ad-spend tools, or broad media mutations.
@@ -57,7 +57,8 @@ Create a draft through MCP when connected:
 1. `list_workspaces`
 2. `list_integrations` with `workspaceId`
 3. `get_integration_capabilities` with `workspaceId` and `integrationId`
-4. `create_draft_content` with `workspaceId`, `integrationId`, `body`, and optional supported media/settings
+4. `get_integration_options` if capabilities returns a required or useful `optionKey`
+5. `create_draft_content` with `workspaceId`, `integrationId`, `body`, and optional supported media/settings
 
 Schedule an existing draft through MCP:
 

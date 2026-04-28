@@ -56,7 +56,7 @@ EziBreezy exposes a hosted MCP endpoint for agent-native tool calls:
 https://api.ezibreezy.com/mcp
 ```
 
-From v0.3.0 the plugin bundles the MCP server config in `plugins/ezibreezy-agent/.mcp.json`, so installing the plugin in Claude Code or Codex auto-wires the server. You only need to set `EZIBREEZY_API_KEY` in the environment that launches your agent client.
+From v0.4.0 the plugin bundles the current MCP server config in `plugins/ezibreezy-agent/.mcp.json`, so installing the plugin in Claude Code or Codex auto-wires the server. You only need to set `EZIBREEZY_API_KEY` in the environment that launches your agent client.
 
 macOS / Linux:
 

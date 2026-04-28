@@ -80,6 +80,7 @@ Supported content fields:
 - `settings`: optional object for platform fields from capabilities.
 - `postType`: optional `post`, `reel`, `story`, `thread`, or `article`.
 - `firstComment`, `shareToFeed`, `thumbOffsetMs`, `userTags`, `productTags`, `mediaCrops`: optional platform fields.
+- `threadMessages`: optional array for thread-style content, max 20 items.
 - `pillarId`, `formatId`: optional UUIDs.
 - `tagIds`, `assigneeIds`: optional UUID arrays.
 - `priority`: optional `urgent`, `high`, `medium`, or `low`.
@@ -361,6 +362,7 @@ Visual-only item:
   "integrationId": "00000000-0000-4000-8000-000000000001",
   "kind": "visual_only",
   "mediaIds": ["00000000-0000-4000-8000-000000000002"],
+  "coverMediaId": "00000000-0000-4000-8000-000000000002",
   "note": "Plan this visual",
   "settings": { "aspectRatio": 1 }
 }
@@ -424,6 +426,7 @@ Grid constraints:
 - `visual_only` requires `mediaIds`.
 - `linked_post` requires `linkedContentId`.
 - `mediaIds` and `itemIds` must be unique.
+- `coverMediaId` can be a UUIDv4 string or null.
 - `settings.aspectRatio` can be null or a number from 0.1 to 10.
 - Replace-media accepts 1 to 10 media IDs.
 

@@ -1,6 +1,6 @@
 # Integration Capabilities
 
-Curated from `src/public-api/controllers/public-integrations.controller.ts`.
+Quick-glance reference for the live capability catalog in `src/integrations/integration-capability-catalog.ts`.
 
 ## Contents
 
@@ -25,7 +25,7 @@ Get safe publishing requirements:
 ezibreezy integrations:capabilities --workspace <workspaceId> --integration <integrationId>
 ```
 
-Fetch dynamic options returned by capabilities:
+Fetch dynamic options returned by capabilities. Prefer MCP `get_integration_options` when connected; use the CLI fallback when MCP is unavailable:
 
 ```bash
 ezibreezy integrations:options --workspace <workspaceId> --integration <integrationId> --key <optionKey>
@@ -49,6 +49,7 @@ Capabilities returns:
 
 - `integration`: `id`, `platform`, `username`, `name`, and `status`.
 - `content`: `postTypes`, `mediaTypes`, `maxMedia`, `supportsThreads`, `requiresMedia`, and `requiresTitle`.
+- `rules`: live plain-text platform publishing rules from the backend. Treat this as the source of truth for platform-specific requirements.
 - `settings.fields`: supported platform settings.
 - `options`: dynamic option keys available for that integration.
 - `capabilities`: curated provider capability data from the connection, when present.
@@ -119,6 +120,7 @@ Options:
 Fetch flow for products:
 
 ```bash
+# MCP preferred: call get_integration_options with optionKey instagram-catalogs, then instagram-products.
 ezibreezy integrations:options --workspace <workspaceId> --integration <integrationId> --key instagram-catalogs
 ezibreezy integrations:options --workspace <workspaceId> --integration <integrationId> --key instagram-products --json product-options.json
 ```
@@ -163,8 +165,6 @@ Options:
 
 - `tiktok-creator-info`: no input required.
 
-Always fetch creator info before selecting `privacy_level`.
-
 ### YouTube
 
 Settings:
@@ -195,12 +195,11 @@ Options:
 
 - `pinterest-boards`: no input required.
 
-Always fetch boards before creating or scheduling a Pinterest post.
-
 ## Agent Rules
 
 - Call `integrations:capabilities` before platform-specific settings.
-- When a settings field has `optionKey`, call `integrations:options` before choosing a value.
+- Read and follow the live `rules` string returned by capabilities; do not rely on static prose for platform-specific publishing requirements.
+- When a settings field has `optionKey`, call MCP `get_integration_options` before choosing a value, or use CLI `integrations:options` as the fallback.
 - If `requiresMedia` is true, attach uploaded media before scheduling or publishing.
 - If `requiresTitle` is true, include `title` before scheduling or publishing.
 - Respect `maxMedia` even though the generic content schema allows up to 10 media IDs.
