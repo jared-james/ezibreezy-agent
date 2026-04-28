@@ -34,6 +34,11 @@ Do not paste API keys, bearer tokens, presigned URLs, or provider payloads into 
 | `create_draft_content` | `ezibreezy content:create --workspace <workspaceId> --json create-content.json` | MCP forces draft behavior. CLI payload should set `saveAsDraft: true`. |
 | `list_content` | `ezibreezy content:list --workspace <workspaceId>` | Read-only public content statuses. |
 | `get_content` | `ezibreezy content:get --workspace <workspaceId> --id <contentId>` | Read-only sanitized content detail. |
+| `get_content_history` | `ezibreezy content:history --workspace <workspaceId> --id <contentId>` | Read-only approval/client-review activity timeline. Requires an Agency or Scale workspace plan. Does not comment, react, decide, request, or withdraw. |
+| `list_approval_history` | `ezibreezy content:approval-history --workspace <workspaceId>` | Read-only resolved approval/client-review history. Requires an Agency or Scale workspace plan. |
+| `get_approval_history_detail` | `ezibreezy content:approval-history:internal --workspace <workspaceId> --record <recordId>` or `content:approval-history:client-batch --workspace <workspaceId> --batch <batchId>` | Read-only internal approval or client-batch history detail. Requires an Agency or Scale workspace plan. |
+| `list_client_review_batches` | `ezibreezy client-reviews:open --workspace <workspaceId>` | Read-only open unsent client review batches for admin/editor users. Requires an Agency or Scale workspace plan. Does not create, send, resend, cancel, override, comment, or delete. |
+| `get_client_review_batch` | `ezibreezy client-reviews:get --workspace <workspaceId> --batch <batchId>` | Read-only client review batch summary. Requires an Agency or Scale workspace plan. Does not mutate the batch. |
 | `list_taxonomy` | `ezibreezy taxonomy:tags --workspace <workspaceId>`, `taxonomy:pillars`, `taxonomy:formats` | Read-only tags, pillars, and formats for planning. |
 | `list_hashtag_groups` | `ezibreezy hashtags:list --workspace <workspaceId>` | Read-only saved hashtag groups. |
 | `schedule_content` | `ezibreezy content:schedule --workspace <workspaceId> --id <contentId> --scheduled-at <isoWithTimezone>` | Requires explicit ISO 8601 timezone such as `2026-05-01T10:00:00+10:00`. |
@@ -62,7 +67,8 @@ High-risk MCP tools require exact confirmation text unless server-side dangerous
 
 Use CLI or API fallback, with the safety policy, for:
 
-- Approval/client-review reads and analytics report generation.
+- Analytics report generation.
+- Approval/client-review sends, resends, requests, withdrawals, decisions, comments, participant updates, overrides, reopens, cancels, and deletes.
 - Inbox notes, read-state mutations, moderation, retries, and deletes.
 - Retry publishing, delete/archive/restore content, boost/ad-spend tools, or broad media mutations.
 
