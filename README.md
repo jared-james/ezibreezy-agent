@@ -50,13 +50,13 @@ Do not put raw API keys in URLs, prompts, git history, or shared chat.
 
 ## Hosted MCP Setup
 
-EziBreezy exposes an optional hosted MCP endpoint for agent-native tool calls:
+EziBreezy exposes a hosted MCP endpoint for agent-native tool calls:
 
 ```text
 https://api.ezibreezy.com/mcp
 ```
 
-Use an EziBreezy API key through `EZIBREEZY_API_KEY`. Store the key in your shell environment or client secret storage, not in shared project files.
+From v0.3.0 the plugin bundles the MCP server config in `plugins/ezibreezy-agent/.mcp.json`, so installing the plugin in Claude Code or Codex auto-wires the server. You only need to set `EZIBREEZY_API_KEY` in the environment that launches your agent client.
 
 macOS / Linux:
 
@@ -70,7 +70,19 @@ PowerShell:
 $env:EZIBREEZY_API_KEY="ezb_live_..."
 ```
 
-Codex config:
+To persist on Windows so all new shells inherit it:
+
+```powershell
+[Environment]::SetEnvironmentVariable("EZIBREEZY_API_KEY", "ezb_live_...", "User")
+```
+
+If the env var is unset when the plugin loads, the MCP entry will appear as "needs authentication" rather than failing the install. Set the key, restart your agent client, and the entry connects.
+
+### Manual Setup
+
+If you are not using the plugin, configure MCP directly.
+
+Codex `~/.codex/config.toml`:
 
 ```toml
 [mcp_servers.ezibreezy]
@@ -78,14 +90,14 @@ url = "https://api.ezibreezy.com/mcp"
 bearer_token_env_var = "EZIBREEZY_API_KEY"
 ```
 
-Claude Code local setup:
+Claude Code:
 
 ```bash
 claude mcp add --transport http ezibreezy https://api.ezibreezy.com/mcp \
   --header "Authorization: Bearer $EZIBREEZY_API_KEY"
 ```
 
-Claude project `.mcp.json` example:
+Or a project `.mcp.json`:
 
 ```json
 {
@@ -101,7 +113,7 @@ Claude project `.mcp.json` example:
 }
 ```
 
-This plugin does not auto-install the MCP server yet. Configure MCP explicitly so installs do not fail on machines that have not set `EZIBREEZY_API_KEY`.
+Do not put raw API keys in URLs, prompts, git history, shared project files, or screenshots.
 
 ## Hosted MCP Vs CLI
 

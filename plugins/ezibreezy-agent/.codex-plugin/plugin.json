@@ -1,8 +1,9 @@
 {
   "name": "ezibreezy-agent",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Operate EziBreezy safely through the CLI, public API, and optional hosted MCP.",
   "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
   "homepage": "https://ezibreezy.com",
   "repository": "https://github.com/jared-james/ezibreezy-agent",
   "license": "MIT",
