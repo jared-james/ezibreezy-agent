@@ -50,6 +50,8 @@ Do not paste API keys, OAuth codes, bearer tokens, refresh tokens, presigned URL
 | `complete_media_upload`        | `ezibreezy media:upload <file> --workspace <workspaceId>`                                                                                                                          | Finalizes an MCP upload session.                                                                                                                                                     |
 | `list_media`                   | `ezibreezy media:list --workspace <workspaceId>`                                                                                                                                   | Read-only media discovery with safe metadata and filters.                                                                                                                            |
 | `list_media_folders`           | `ezibreezy media:folders:list --workspace <workspaceId>`                                                                                                                           | Read-only media folder discovery.                                                                                                                                                    |
+| `get_media_folder`             | `ezibreezy media:folders:get --workspace <workspaceId> --id <folderId>`                                                                                                            | Read-only safe media folder detail.                                                                                                                                                  |
+| `get_media_folder_path`        | `ezibreezy media:folders:path --workspace <workspaceId> --id <folderId>`                                                                                                           | Read-only safe media folder ancestor path.                                                                                                                                           |
 | `list_media_tags`              | `ezibreezy media:tags:list --workspace <workspaceId>`                                                                                                                              | Read-only media tag discovery.                                                                                                                                                       |
 | `get_media`                    | `ezibreezy media:get --workspace <workspaceId> --id <mediaId>`                                                                                                                     | Read-only safe media metadata.                                                                                                                                                       |
 | `get_media_view_url`           | `ezibreezy media:view-url --workspace <workspaceId> --id <mediaId>`                                                                                                                | Treat returned URLs as sensitive and short-lived.                                                                                                                                    |
@@ -64,6 +66,15 @@ Do not paste API keys, OAuth codes, bearer tokens, refresh tokens, presigned URL
 | `get_inbox_stats`              | `ezibreezy inbox:stats --workspace <workspaceId>`                                                                                                                                  | Read-only inbox counts.                                                                                                                                                              |
 | `publish_now`                  | `ezibreezy content:publish --workspace <workspaceId> --id <contentId> --yes`                                                                                                       | High-risk external action. Requires `confirmationText: "publish_now:<contentId>"` or server-enabled dangerous auto-confirm.                                                          |
 | `reply_to_inbox_thread`        | `ezibreezy inbox:reply --workspace <workspaceId> --thread <threadId> --json reply.json --yes`                                                                                      | High-risk external action. Requires `confirmationText: "inbox_reply:<threadId>"` or server-enabled dangerous auto-confirm.                                                           |
+| `moderate_inbox_message`       | `ezibreezy inbox:moderate --workspace <workspaceId> --message <messageId> --json moderate.json --yes`                                                                              | High-risk moderation action for one message. Requires `confirmationText: "inbox_moderate:<messageId>:<action>"` or server-enabled dangerous auto-confirm.                            |
+| `set_inbox_thread_read_state`  | `ezibreezy inbox:read --workspace <workspaceId> --thread <threadId>` or `inbox:unread`                                                                                             | High-risk read-state mutation for one thread. Requires `confirmationText: "inbox_read_state:<threadId>:<readState>"` or server-enabled dangerous auto-confirm. Bulk read-all is not exposed through MCP. |
+| `retry_inbox_message`          | `ezibreezy inbox:retry-message --workspace <workspaceId> --message <messageId> --yes`                                                                                               | High-risk retry action for one failed outgoing message. Requires `confirmationText: "inbox_retry:<messageId>"` or server-enabled dangerous auto-confirm.                              |
+| `delete_failed_inbox_message`  | `ezibreezy inbox:delete-failed --workspace <workspaceId> --message <messageId> --yes`                                                                                               | High-risk delete action for one failed outgoing message. Requires `confirmationText: "inbox_delete_failed:<messageId>"` or server-enabled dangerous auto-confirm.                     |
+| `archive_content`              | `ezibreezy content:archive --workspace <workspaceId> --id <contentId>`                                                                                                             | High-risk content lifecycle action. Requires `confirmationText: "archive_content:<contentId>"` or server-enabled dangerous auto-confirm.                                             |
+| `restore_content`              | `ezibreezy content:restore --workspace <workspaceId> --id <contentId>`                                                                                                             | High-risk content lifecycle action. Requires `confirmationText: "restore_content:<contentId>"` or server-enabled dangerous auto-confirm.                                             |
+| `delete_content`               | `ezibreezy content:delete --workspace <workspaceId> --id <contentId>`                                                                                                              | High-risk content lifecycle action. Requires `confirmationText: "delete_content:<contentId>"` or server-enabled dangerous auto-confirm.                                              |
+| `retry_content`                | `ezibreezy content:retry --workspace <workspaceId> --id <contentId>`                                                                                                               | High-risk content lifecycle action. Requires `confirmationText: "retry_content:<contentId>"` or server-enabled dangerous auto-confirm.                                               |
+| `send_client_review_batch`     | `ezibreezy client-reviews:send --workspace <workspaceId> --batch <batchId> --yes`                                                                                                 | High-risk external notification. Requires `confirmationText: "client_review_send:<batchId>"` or server-enabled dangerous auto-confirm.                                               |
 
 ## High-Risk Confirmation
 
@@ -71,7 +82,16 @@ High-risk MCP tools require exact confirmation text unless server-side dangerous
 
 - `publish_now`: pass `confirmationText` as `publish_now:<contentId>`.
 - `reply_to_inbox_thread`: pass `confirmationText` as `inbox_reply:<threadId>`.
-- `dangerouslyAutoConfirm: true` is only honored when server policy allows the action, such as `EZIBREEZY_MCP_DANGEROUS_AUTO_CONFIRM_ACTIONS=publish_now,inbox_reply`.
+- `moderate_inbox_message`: pass `confirmationText` as `inbox_moderate:<messageId>:<action>`.
+- `set_inbox_thread_read_state`: pass `confirmationText` as `inbox_read_state:<threadId>:<readState>`.
+- `retry_inbox_message`: pass `confirmationText` as `inbox_retry:<messageId>`.
+- `delete_failed_inbox_message`: pass `confirmationText` as `inbox_delete_failed:<messageId>`.
+- `archive_content`: pass `confirmationText` as `archive_content:<contentId>`.
+- `restore_content`: pass `confirmationText` as `restore_content:<contentId>`.
+- `delete_content`: pass `confirmationText` as `delete_content:<contentId>`.
+- `retry_content`: pass `confirmationText` as `retry_content:<contentId>`.
+- `send_client_review_batch`: pass `confirmationText` as `client_review_send:<batchId>`.
+- `dangerouslyAutoConfirm: true` is only honored when server policy allows the action, such as `EZIBREEZY_MCP_DANGEROUS_AUTO_CONFIRM_ACTIONS=publish_now,inbox_reply,inbox_moderate,inbox_read_state,inbox_retry,inbox_delete_failed,archive_content,restore_content,delete_content,retry_content,client_review_send`.
 - Tool input alone must not be treated as user permission. If confirmation is missing, ask the user to confirm the exact action and target.
 
 ## Not In MCP V1
@@ -79,9 +99,9 @@ High-risk MCP tools require exact confirmation text unless server-side dangerous
 Use CLI or API fallback, with the safety policy, for:
 
 - Analytics report generation.
-- Approval/client-review sends, resends, requests, withdrawals, decisions, comments, participant updates, overrides, reopens, cancels, and deletes.
-- Inbox notes, read-state mutations, moderation, retries, and deletes.
-- Retry publishing, delete/archive/restore content, boost/ad-spend tools, or broad media mutations.
+- Approval sends, client-review resends, requests, withdrawals, decisions, comments, participant updates, overrides, reopens, cancels, and deletes.
+- Inbox notes and bulk read-all.
+- Boost/ad-spend tools or broad media mutations.
 
 ## Example Sequence
 
@@ -91,7 +111,7 @@ Create a draft through MCP when connected:
 2. `list_integrations` with `workspaceId`
 3. `get_integration_capabilities` with `workspaceId` and `integrationId`
 4. `get_integration_options` if capabilities returns a required or useful `optionKey`
-5. `list_media`, `list_media_folders`, or `list_media_tags` if existing assets need to be selected
+5. `list_media`, `list_media_folders`, `get_media_folder`, `get_media_folder_path`, or `list_media_tags` if existing assets need to be selected
 6. `create_draft_content` with `workspaceId`, `integrationId`, `body`, and optional supported media/settings
 
 Schedule an existing draft through MCP:
