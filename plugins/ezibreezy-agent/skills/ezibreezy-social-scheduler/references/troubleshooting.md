@@ -80,9 +80,9 @@ Common fixes:
 - Ensure payload files are valid JSON, not JavaScript.
 - Ensure IDs are UUID strings; grid planner IDs must be UUIDv4.
 - Include at least one field for update payloads.
-- For create content, include `integrationId` and non-empty `body`.
-- Keep content body fields at or below 25000 characters.
-- Keep content `mediaIds` to 10 or fewer, then apply stricter platform `maxMedia` from capabilities.
+- For create content, include `integrationId` and at least one useful draft field such as `captions.canonical`, `internalTitle`, `publishTitle`, or `contentMedia`.
+- Keep `captions.canonical` and caption overrides at or below 25000 characters.
+- Use `contentMedia` for content attachments. Keep it to 10 or fewer items before applying stricter platform `maxMedia` from capabilities.
 - For approval/client-review comments, include `body` or `attachmentId`.
 - For inbox replies, include `content` or `attachment`.
 - For grid create, include `mediaIds` for `visual_only` or `linkedContentId` for `linked_post`.
@@ -109,7 +109,7 @@ ezibreezy integrations:capabilities --workspace <workspaceId> --integration <int
 Then check:
 
 - `requiresMedia`: upload/select media first.
-- `requiresTitle`: include a `title`.
+- `requiresTitle`: include `publishTitle`.
 - `maxMedia`: reduce attached media.
 - `postTypes`: choose a supported `postType`.
 - `mediaTypes`: choose supported uploaded media.
@@ -118,9 +118,9 @@ Then check:
 
 Known strict cases:
 
-- Pinterest requires media, title, and `settings.boardId`.
-- YouTube requires one video and title.
-- TikTok requires media, title, and account-specific privacy options.
+- Pinterest requires media, `publishTitle`, and `settings.boardId`.
+- YouTube requires one video and `publishTitle`.
+- TikTok requires media, `publishTitle`, and account-specific privacy options.
 - Instagram requires media.
 
 ## Agency Plan Or Role Errors

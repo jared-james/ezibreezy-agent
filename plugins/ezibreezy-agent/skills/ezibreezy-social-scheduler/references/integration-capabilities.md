@@ -63,28 +63,33 @@ Integration status is one of:
 
 Do not mutate content through an integration unless its status is `connected`.
 
-## Common Settings Fields
+## Settings And Media Metadata
 
-Most platforms support:
+`settings.fields` contains provider publish settings only. Do not place media metadata or editor state in `settings`.
 
-- `mediaCrops`: object, optional per-media crop data keyed by media ID and platform.
-- `coverUrl`: string, optional media cover or thumbnail URL where supported.
+Use `contentMedia` for per-media metadata:
+
+- `contentMedia[].crops`: optional crop data keyed by platform.
+- `contentMedia[].userTags`: optional user tags where supported.
+- `contentMedia[].productTags`: optional product tags where supported.
+- `contentMedia[].cover.coverMediaId`: optional uploaded media ID for a cover/thumbnail where supported.
+- `contentMedia[].cover.thumbOffsetMs`: optional thumbnail offset; provider execution maps this to platform API fields.
 
 ## Platform Matrix
 
-| Platform | Post types | Media types | Max media | Threads | Requires media | Requires title |
-| --- | --- | --- | ---: | --- | --- | --- |
-| `x` | `post`, `thread` | `image`, `gif`, `video` | 4 | yes | no | no |
-| `linkedin` | `post`, `article` | `image`, `video` | 10 | no | no | no |
-| `instagram` | `post`, `reel`, `story` | `image`, `video` | 10 | no | yes | no |
-| `facebook` | `post`, `reel`, `story` | `image`, `video` | 10 | no | no | no |
-| `facebook-page` | `post`, `reel`, `story` | `image`, `video` | 10 | no | no | no |
-| `threads` | `post`, `thread` | `image`, `video` | 10 | yes | no | no |
-| `tiktok` | `post`, `reel` | `image`, `video` | 35 | no | yes | yes |
-| `youtube` | `post`, `reel` | `video` | 1 | no | yes | yes |
-| `pinterest` | `post` | `image`, `video` | 1 | no | yes | yes |
+| Platform        | Post types              | Media types             | Max media | Threads | Requires media | Requires title |
+| --------------- | ----------------------- | ----------------------- | --------: | ------- | -------------- | -------------- |
+| `x`             | `post`, `thread`        | `image`, `gif`, `video` |         4 | yes     | no             | no             |
+| `linkedin`      | `post`                  | `image`, `video`        |        10 | no      | no             | no             |
+| `instagram`     | `post`, `reel`, `story` | `image`, `video`        |        10 | no      | yes            | no             |
+| `facebook`      | `post`, `reel`, `story` | `image`, `video`        |        10 | no      | no             | no             |
+| `facebook-page` | `post`, `reel`, `story` | `image`, `video`        |        10 | no      | no             | no             |
+| `threads`       | `post`, `thread`        | `image`, `video`        |        20 | yes     | no             | no             |
+| `tiktok`        | `post`, `reel`          | `image`, `video`        |        35 | no      | yes            | yes            |
+| `youtube`       | `post`, `reel`          | `video`                 |         1 | no      | yes            | yes            |
+| `pinterest`     | `post`                  | `image`, `video`        |         1 | no      | yes            | yes            |
 
-Unknown platforms fall back to common post types `post`, `reel`, `story`, `thread`, `article`; media types `image`, `video`; max media 10; no required media/title; no thread support.
+Unknown platforms fall back to common post types `post`, `reel`, `story`, and `thread`; media types `image`, `video`; max media 10; no required media/title; no thread support.
 
 ## Platform Settings And Options
 
@@ -98,7 +103,7 @@ Options: none.
 
 ### LinkedIn
 
-Settings: common settings only.
+Settings: none.
 
 Options: none.
 
@@ -106,10 +111,8 @@ Options: none.
 
 Settings:
 
-- `locationId`: optional string, use option key `locations`.
+- `locationId`: optional Instagram location ID.
 - `collaborators`: optional string array of usernames or IDs.
-- `userTags`: optional object or array.
-- `productTags`: optional object, use option key `instagram-products`.
 
 Options:
 
@@ -129,7 +132,9 @@ ezibreezy integrations:options --workspace <workspaceId> --integration <integrat
 
 Settings:
 
-- `facebookPostType`: optional string override.
+- `facebookLinkUrl`: optional feed link URL. Required when `facebookCtaType` is a CTA button.
+- `facebookCtaType`: optional CTA button type. Use `NO_BUTTON` or omit for no CTA.
+- `facebookLocationId`: optional Facebook Page location ID.
 
 Options: none.
 
@@ -156,7 +161,6 @@ Settings:
 - `brand_content_toggle`: boolean.
 - `brand_organic_toggle`: boolean.
 - `is_aigc`: boolean.
-- `video_cover_timestamp_ms`: number.
 - `photo_cover_index`: number.
 - `auto_add_music`: boolean.
 - `tiktok_post_to_drafts`: boolean.
@@ -169,7 +173,6 @@ Options:
 
 Settings:
 
-- `youtubePostType`: `video` or `short`.
 - `privacyStatus`: `public`, `unlisted`, or `private`.
 - `tags`: string array.
 - `categoryId`: string, use option key `youtube-video-categories`.
@@ -177,7 +180,6 @@ Settings:
 - `notifySubscribers`: boolean.
 - `embeddable`: boolean.
 - `license`: `youtube` or `creativeCommon`.
-- `thumbnailUrl`: string for non-short videos.
 
 Options:
 
@@ -201,6 +203,7 @@ Options:
 - Read and follow the live `rules` string returned by capabilities; do not rely on static prose for platform-specific publishing requirements.
 - When a settings field has `optionKey`, call MCP `get_integration_options` before choosing a value, or use CLI `integrations:options` as the fallback.
 - If `requiresMedia` is true, attach uploaded media before scheduling or publishing.
-- If `requiresTitle` is true, include `title` before scheduling or publishing.
-- Respect `maxMedia` even though the generic content schema allows up to 10 media IDs.
+- If `requiresTitle` is true, include `publishTitle` before scheduling or publishing.
+- Respect `maxMedia` when building `contentMedia`.
+- Use the top-level `postType` only. Do not send platform-specific post type override settings.
 - Do not expose tokens, scopes, stored provider settings, or raw provider payloads; capabilities and options are the safe discovery surface.

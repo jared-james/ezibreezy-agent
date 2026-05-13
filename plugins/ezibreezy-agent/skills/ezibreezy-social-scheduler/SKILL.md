@@ -27,7 +27,7 @@ Before creating, scheduling, publishing, or updating content:
 
 ## Mutation Defaults
 
-- Create drafts by default. For content creation, set `saveAsDraft: true` unless the user explicitly asked to schedule or publish.
+- Create drafts by default. For content creation, omit `intent` or set `intent: "draft"` unless the user explicitly asked to schedule or publish.
 - When MCP is connected, use `create_draft_content` for supported draft creation after workspace, integration, capabilities, and needed options are resolved; use CLI `content:create` as the fallback.
 - Do not schedule unless the user provides an explicit date, time, and timezone.
 - Do not publish immediately unless the user explicitly requests publish-now behavior in the current task.
@@ -42,8 +42,8 @@ Require explicit confirmation immediately before any action that is externally v
 - Publish, retry publishing, archive, restore, delete, or schedule content when intent is ambiguous.
 - Send, resend, withdraw, resubmit, or request approvals or client reviews.
 - Send inbox replies, moderate inbox messages, retry failed inbox messages, delete failed messages, or mark threads read in bulk.
-- Delete content, media, failed inbox messages, grid planner items, folders, tags, or hashtag groups.
-- Bulk-delete media, bulk-move media, bulk-tag or bulk-untag media.
+- Delete content, media, failed inbox messages, grid planner items, folders, labels, or hashtag groups.
+- Bulk-delete media, bulk-move media, bulk-label or bulk-unlabel media.
 - Promote grid items to content, reorder large grids, or remove covers when the result is unclear.
 - Generate or export analytics reports that may create files, notify users, or consume plan-limited resources.
 

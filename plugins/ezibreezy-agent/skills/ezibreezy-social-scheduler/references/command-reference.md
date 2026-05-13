@@ -40,14 +40,15 @@ ezibreezy content:list --workspace <workspaceId>
 ezibreezy content:get --workspace <workspaceId> --id <contentId>
 ezibreezy content:failed-count --workspace <workspaceId>
 ezibreezy media:list --workspace <workspaceId>
+ezibreezy media:list --workspace <workspaceId> --state deleted
 ezibreezy media:get --workspace <workspaceId> --id <mediaId>
 ezibreezy media:download-url --workspace <workspaceId> --id <mediaId>
 ezibreezy media:view-url --workspace <workspaceId> --id <mediaId>
 ezibreezy media:folders:list --workspace <workspaceId> --parent-id root
 ezibreezy media:folders:get --workspace <workspaceId> --id <folderId>
 ezibreezy media:folders:path --workspace <workspaceId> --id <folderId>
-ezibreezy media:tags:list --workspace <workspaceId>
-ezibreezy taxonomy:tags --workspace <workspaceId>
+ezibreezy media:labels:list --workspace <workspaceId>
+ezibreezy taxonomy:labels --workspace <workspaceId>
 ezibreezy taxonomy:pillars --workspace <workspaceId>
 ezibreezy taxonomy:formats --workspace <workspaceId>
 ezibreezy hashtags:list --workspace <workspaceId>
@@ -89,10 +90,10 @@ ezibreezy media:update --workspace <workspaceId> --id <mediaId> --json media-upd
 ezibreezy media:folders:create --workspace <workspaceId> --json media-folder.json
 ezibreezy media:folders:update --workspace <workspaceId> --id <folderId> --json media-folder.json
 ezibreezy media:folders:move --workspace <workspaceId> --id <folderId> --json media-folder-move.json
-ezibreezy media:tags:create --workspace <workspaceId> --json media-tag.json
-ezibreezy media:tags:update --workspace <workspaceId> --id <tagId> --json media-tag.json
-ezibreezy media:tags:attach --workspace <workspaceId> --id <mediaId> --json media-tag-ids.json
-ezibreezy media:tags:detach --workspace <workspaceId> --id <mediaId> --json media-tag-ids.json
+ezibreezy media:labels:create --workspace <workspaceId> --json media-label.json
+ezibreezy media:labels:update --workspace <workspaceId> --id <labelId> --json media-label.json
+ezibreezy media:labels:attach --workspace <workspaceId> --id <mediaId> --json media-label-ids.json
+ezibreezy media:labels:detach --workspace <workspaceId> --id <mediaId> --json media-label-ids.json
 ezibreezy hashtags:create --workspace <workspaceId> --json hashtags.json
 ezibreezy hashtags:update --workspace <workspaceId> --id <hashtagGroupId> --json hashtags.json
 ezibreezy inbox:note --workspace <workspaceId> --thread <threadId> --json inbox-note.json
@@ -108,11 +109,13 @@ These need explicit user intent. Scheduling also needs date, time, and timezone:
 
 ```bash
 ezibreezy content:schedule --workspace <workspaceId> --id <contentId> --scheduled-at "2026-05-01T10:00:00+10:00"
+ezibreezy content:intended-time --workspace <workspaceId> --id <contentId> --scheduled-at "2026-05-01T10:00:00+10:00"
 ezibreezy content:publish --workspace <workspaceId> --id <contentId> --yes
+ezibreezy content:published-caption --workspace <workspaceId> --id <contentId> --json published-caption.json --yes
 ezibreezy content:retry --workspace <workspaceId> --id <contentId>
 ```
 
-`content:publish` requires CLI `--yes`. `content:retry` does not require `--yes` in the CLI, but agents should still confirm because it can publish externally.
+`content:create` requires CLI `--yes` when the payload has `intent: "publish_now"`. `content:publish` requires CLI `--yes`. `content:published-caption` requires CLI `--yes` because it edits already-published provider content. `content:retry` does not require `--yes` in the CLI, but agents should still confirm because it can publish externally.
 
 ## Destructive Or Broad Actions
 
@@ -125,11 +128,11 @@ ezibreezy content:delete --workspace <workspaceId> --id <contentId>
 ezibreezy media:archive --workspace <workspaceId> --id <mediaId>
 ezibreezy media:delete --workspace <workspaceId> --id <mediaId>
 ezibreezy media:folders:delete --workspace <workspaceId> --id <folderId>
-ezibreezy media:tags:delete --workspace <workspaceId> --id <tagId>
+ezibreezy media:labels:delete --workspace <workspaceId> --id <labelId>
 ezibreezy media:bulk-archive --workspace <workspaceId> --json media-ids.json
 ezibreezy media:bulk-move --workspace <workspaceId> --json media-bulk-move.json
-ezibreezy media:bulk-tag --workspace <workspaceId> --json media-bulk-tags.json
-ezibreezy media:bulk-untag --workspace <workspaceId> --json media-bulk-tags.json
+ezibreezy media:bulk-label --workspace <workspaceId> --json media-bulk-labels.json
+ezibreezy media:bulk-unlabel --workspace <workspaceId> --json media-bulk-labels.json
 ezibreezy hashtags:delete --workspace <workspaceId> --id <hashtagGroupId>
 ezibreezy inbox:read --workspace <workspaceId> --thread <threadId>
 ezibreezy inbox:unread --workspace <workspaceId> --thread <threadId>
@@ -141,6 +144,7 @@ CLI-enforced `--yes`:
 
 ```bash
 ezibreezy content:publish --workspace <workspaceId> --id <contentId> --yes
+ezibreezy content:published-caption --workspace <workspaceId> --id <contentId> --json published-caption.json --yes
 ezibreezy media:bulk-delete --workspace <workspaceId> --json media-ids.json --yes
 ezibreezy inbox:read-all --workspace <workspaceId> --json inbox-read-all.json --yes
 ezibreezy inbox:reply --workspace <workspaceId> --thread <threadId> --json inbox-reply.json --yes
@@ -230,9 +234,11 @@ Goal: select, upload, inspect, and organize media before content mutation.
 5. Use temporary URLs only when needed for preview/download:
    `media:view-url` or `media:download-url`.
 6. Update metadata with `media:update --json`.
-7. Organize with folder and tag commands when requested.
-8. Confirm before deletes, bulk moves/tags, or archive operations.
-9. Return media IDs, filenames, media type, folder/tag changes, and whether the media satisfies integration capabilities.
+7. Organize with folder and label commands when requested.
+8. Confirm before deletes, bulk moves/labels, or archive operations.
+9. Return media IDs, filenames, media type, folder/label changes, and whether the media satisfies integration capabilities.
+
+`media:delete` and `media:bulk-delete` move active media to the Bin and return `deleteAfter`. Scheduled-post usage blocks delete/archive operations with `MEDIA_ATTACHED_TO_SCHEDULED_POST`; bulk label toggle is composed from `media:bulk-label` and `media:bulk-unlabel`.
 
 ### Content Workflow
 
@@ -242,12 +248,13 @@ Goal: create or edit content safely, defaulting to draft.
 2. Run capabilities and dynamic options before platform-specific settings.
 3. Inspect relevant existing content with `content:list` or `content:get` when updating.
 4. Upload/select media first if needed.
-5. Create new content with `content:create --json` and `saveAsDraft: true` unless schedule/publish is explicit.
+5. Create new content with `content:create --json` and draft intent unless schedule/publish is explicit.
 6. Update content with `content:update --id <contentId> --json <file>`; include only fields that should change.
 7. Schedule only when date, time, and timezone are explicit:
    `content:schedule --scheduled-at "2026-05-01T10:00:00+10:00"`.
-8. Set workflow state only to `idea` or `drafting` with `content:workflow`.
-9. Return content ID, status, workflow status if known, workspace, integration, scheduled time, media IDs, and next review step.
+8. Use `content:intended-time` only when the user wants a planned publish time without scheduling.
+9. Set workflow state only to `idea` or `drafting` with `content:workflow`.
+10. Return content ID, status, workflow status if known, workspace, integration, scheduled time, media IDs, and next review step.
 
 ### Publishing Workflow
 
@@ -256,9 +263,10 @@ Goal: handle publish-now, retry, archive, restore, and delete without accidental
 1. Read the content with `content:get`.
 2. Confirm workspace, integration, content ID, current status, and desired action.
 3. For publish-now, confirm explicit current-task intent, then run `content:publish --yes`.
-4. For retry, confirm external retry intent, then run `content:retry`.
-5. For archive/restore/delete, confirm the exact content ID and effect, then run the matching command.
-6. Return resulting status or deletion marker, content ID, workspace, integration, and any provider error.
+4. For published Facebook caption edits, confirm the exact content ID and new caption, then run `content:published-caption --yes`.
+5. For retry, confirm external retry intent, then run `content:retry`.
+6. For archive/restore/delete, confirm the exact content ID and effect, then run the matching command.
+7. Return resulting status or deletion marker, content ID, workspace, integration, and any provider error.
 
 ### Approval Workflow
 
@@ -278,12 +286,12 @@ Goal: manage internal approval and client review work in agency workspaces.
 
 Goal: reuse or maintain labels that shape content planning.
 
-1. Read taxonomy before tagging content:
-   `taxonomy:tags`, `taxonomy:pillars`, and `taxonomy:formats`.
+1. Read taxonomy before labeling content:
+   `taxonomy:labels`, `taxonomy:pillars`, and `taxonomy:formats`.
 2. Read hashtag groups with `hashtags:list`.
 3. Create or update hashtag groups with JSON only when the user asks to manage reusable groups.
 4. Confirm before deleting a hashtag group.
-5. Return selected tag IDs, pillar ID, format ID, hashtag group ID, and how they map to the content payload.
+5. Return selected label IDs, pillar IDs, format IDs, campaign IDs, hashtag group ID, and how they map to the content payload.
 
 ### Analytics Workflow
 

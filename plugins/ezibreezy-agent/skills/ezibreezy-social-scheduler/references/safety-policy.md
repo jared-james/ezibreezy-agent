@@ -4,7 +4,7 @@ Use this policy before EziBreezy mutations.
 
 ## Default Policy
 
-- Prefer drafts. Set `saveAsDraft: true` for new content unless the user explicitly asks to schedule or publish.
+- Prefer drafts. Omit `intent` or set `intent: "draft"` for new content unless the user explicitly asks to schedule or publish.
 - Prefer read-only discovery before mutation: auth, workspace, integration, capabilities, options, and relevant current state.
 - Never schedule without explicit date, time, and timezone.
 - Never publish immediately from ambiguous wording such as "post this" unless the user clearly means publish now.
@@ -12,11 +12,11 @@ Use this policy before EziBreezy mutations.
 
 ## Non-Negotiable Agent Rules
 
-- Default ambiguous content creation to `saveAsDraft: true`.
+- Default ambiguous content creation to draft intent.
 - Never schedule without an explicit date, time, and timezone in the current task or user-provided source of truth.
 - Never immediate-publish without explicit publish-now intent in the current task.
 - Never send inbox replies, moderation actions, approval notifications, client review emails, or bulk read-all without confirmation.
-- Never delete content, failed inbox messages, grid items, media, media folders/tags, or hashtag groups without confirmation.
+- Never delete content, failed inbox messages, grid items, media, media folders/labels, or hashtag groups without confirmation.
 - Always inspect integration capabilities before setting platform-specific fields.
 - Always inspect dynamic options when a capability field includes `optionKey`.
 - Always upload local media through EziBreezy before attaching it to posts.
@@ -32,8 +32,8 @@ Ask for confirmation immediately before:
 - `content:request-approval`, `content:resubmit`, `content:withdraw`, `content:reopen-client-review`.
 - `client-reviews:send`, `client-reviews:resend`, `client-reviews:cancel`, `client-reviews:override`.
 - `inbox:reply`, `inbox:moderate`, `inbox:retry-message`, `inbox:delete-failed`, `inbox:read-all`.
-- `media:delete`, `media:bulk-delete`, `media:bulk-archive`, `media:bulk-move`, `media:bulk-tag`, `media:bulk-untag`.
-- `media:folders:delete`, `media:tags:delete`, `hashtags:delete`.
+- `media:delete`, `media:bulk-delete`, `media:bulk-archive`, `media:bulk-move`, `media:bulk-label`, `media:bulk-unlabel`.
+- `media:folders:delete`, `media:labels:delete`, `hashtags:delete`.
 - `grid:delete`, `grid:promote`, `grid:reorder`, `grid:remove-cover`.
 - `analytics:report`.
 

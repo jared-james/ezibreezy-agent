@@ -18,12 +18,13 @@ Curated from CLI schemas and `packages/cli/README.md`.
 
 ## General Rules
 
-- Use UUID strings for workspace, integration, content, media, approver, batch, folder, tag, pillar, and format IDs.
+- Use UUID strings for workspace, integration, content, media, approver, batch, folder, label, pillar, format, campaign, and campaign phase IDs.
 - Grid planner IDs must be UUIDv4 strings.
 - Use ISO 8601 timestamps with explicit timezone for scheduling, for example `2026-05-01T10:00:00+10:00` or `2026-05-01T00:00:00Z`.
-- Upload local media through EziBreezy first, then use returned `mediaIds`.
-- For drafts, include `saveAsDraft: true`.
-- `content:update` uses the create-content shape except `saveAsDraft`, and at least one field must be present.
+- Upload local media through EziBreezy first, then attach it with `contentMedia[].mediaId`.
+- Base content create/update targets one `integrationId` and one integration-scoped content row. Multi-platform composition should fan out to separate grouped rows.
+- For drafts, omit `intent` or include `intent: "draft"`.
+- `content:update` uses the create-content shape except `intent`, and at least one field must be present.
 
 ## Content Create
 
@@ -32,8 +33,10 @@ Minimal draft:
 ```json
 {
   "integrationId": "00000000-0000-4000-8000-000000000001",
-  "body": "Launch post copy",
-  "saveAsDraft": true
+  "captions": {
+    "canonical": "Launch post copy"
+  },
+  "intent": "draft"
 }
 ```
 
@@ -42,8 +45,14 @@ Scheduled create payload, only when the user provided an explicit date/time/time
 ```json
 {
   "integrationId": "00000000-0000-4000-8000-000000000001",
-  "body": "Launch post copy",
-  "mediaIds": ["00000000-0000-4000-8000-000000000002"],
+  "captions": {
+    "canonical": "Launch post copy"
+  },
+  "contentMedia": [
+    {
+      "mediaId": "00000000-0000-4000-8000-000000000002"
+    }
+  ],
   "scheduledAt": "2026-05-01T10:00:00+10:00",
   "postType": "post"
 }
@@ -54,38 +63,53 @@ Platform-aware payload with taxonomy:
 ```json
 {
   "integrationId": "00000000-0000-4000-8000-000000000001",
-  "title": "Launch title",
-  "body": "Launch post copy",
-  "mediaIds": ["00000000-0000-4000-8000-000000000002"],
+  "internalTitle": "Launch planning card",
+  "publishTitle": "Launch title",
+  "captions": {
+    "canonical": "Launch post copy"
+  },
+  "contentMedia": [
+    {
+      "mediaId": "00000000-0000-4000-8000-000000000002",
+      "order": 0,
+      "cover": {
+        "thumbOffsetMs": 2500
+      }
+    }
+  ],
   "postType": "reel",
   "settings": {
     "privacyStatus": "private"
   },
-  "pillarId": "00000000-0000-4000-8000-000000000003",
-  "formatId": "00000000-0000-4000-8000-000000000004",
-  "tagIds": ["00000000-0000-4000-8000-000000000005"],
+  "pillarIds": ["00000000-0000-4000-8000-000000000003"],
+  "formatIds": ["00000000-0000-4000-8000-000000000004"],
+  "labelIds": ["00000000-0000-4000-8000-000000000005"],
+  "campaignId": "00000000-0000-4000-8000-000000000006",
+  "campaignPhaseId": "00000000-0000-4000-8000-000000000007",
   "priority": "medium",
-  "saveAsDraft": true
+  "intent": "draft"
 }
 ```
 
 Supported content fields:
 
 - `integrationId`: required UUID.
-- `body`: required string, 1 to 25000 characters.
-- `title`: optional string, max 500 characters.
-- `notes`: optional rich-text HTML, max 100000 characters. Internal — never published. Use to attach planning context, links, or meeting notes to a content item.
-- `captions`: optional object.
-- `mediaIds`: optional UUID array, max 10.
+- `internalTitle`: optional internal planning title, max 500 characters. Never published.
+- `publishTitle`: optional provider-facing title, max 500 characters. Required before scheduling/publishing when capabilities say `requiresTitle`.
+- `notes`: optional rich-text HTML, max 100000 characters. Internal - never published. Use to attach planning context, links, or meeting notes to a content item.
+- `captions`: optional object with `canonical` publish text and optional platform overrides.
+- `contentMedia`: optional uploaded media relationships, max 10 before stricter platform limits.
 - `scheduledAt`: optional ISO 8601 with timezone.
 - `settings`: optional object for platform fields from capabilities.
-- `postType`: optional `post`, `reel`, `story`, `thread`, or `article`.
-- `firstComment`, `shareToFeed`, `thumbOffsetMs`, `userTags`, `productTags`, `mediaCrops`: optional platform fields.
+- `postType`: optional `post`, `reel`, `story`, or `thread`.
+- `firstComment`, `shareToFeed`: optional publish behavior fields.
+- `contentMedia[].crops`, `contentMedia[].userTags`, `contentMedia[].productTags`, `contentMedia[].cover.coverMediaId`, `contentMedia[].cover.thumbOffsetMs`: optional media metadata where platform capabilities allow it.
 - `threadMessages`: optional array for thread-style content, max 20 items.
-- `pillarId`, `formatId`: optional UUIDs.
-- `tagIds`, `assigneeIds`: optional UUID arrays.
+- `pillarIds`, `formatIds`, `labelIds`: optional UUID arrays.
+- `campaignId`, `campaignPhaseId`: optional campaign UUIDs; use `null` to clear campaign links on update.
+- `assigneeIds`: optional UUID array.
 - `priority`: optional `urgent`, `high`, `medium`, or `low`.
-- `saveAsDraft`: optional boolean.
+- `intent`: optional `draft`, `schedule`, or `publish_now`. Omitted intent defaults to `draft`.
 
 ## Thread Content
 
@@ -94,22 +118,32 @@ Use `postType: "thread"` only when the integration capabilities support threads.
 ```json
 {
   "integrationId": "00000000-0000-4000-8000-000000000001",
-  "body": "Thread starter",
+  "captions": {
+    "canonical": "Thread starter"
+  },
   "postType": "thread",
   "threadMessages": [
     {
-      "body": "Second post in the thread"
+      "captions": {
+        "canonical": "Second post in the thread"
+      }
     },
     {
-      "body": "Third post with media",
-      "mediaIds": ["00000000-0000-4000-8000-000000000002"]
+      "captions": {
+        "canonical": "Third post with media"
+      },
+      "contentMedia": [
+        {
+          "mediaId": "00000000-0000-4000-8000-000000000002"
+        }
+      ]
     }
   ],
-  "saveAsDraft": true
+  "intent": "draft"
 }
 ```
 
-`threadMessages` accepts up to 20 items; each body is 1 to 25000 characters and each item can have up to 10 media IDs.
+`threadMessages` accepts up to 20 items; each item uses `captions.canonical` and can include `contentMedia`.
 
 ## Schedule Existing Content
 
@@ -137,6 +171,24 @@ ezibreezy content:publish --workspace <workspaceId> --id <contentId> --yes
 
 Confirm first because this is externally visible. The CLI requires `--yes` for publish-now.
 
+## Published Caption Edit
+
+This edits the provider caption for an already-published Facebook item:
+
+```bash
+ezibreezy content:published-caption --workspace <workspaceId> --id <contentId> --json published-caption.json --yes
+```
+
+Payload shape:
+
+```json
+{
+  "message": "Updated Facebook caption"
+}
+```
+
+Confirm first because this changes externally visible provider content. The CLI requires `--yes`.
+
 ## Media
 
 Upload files first:
@@ -161,7 +213,7 @@ Update media:
 }
 ```
 
-Folders and tags:
+Folders and labels:
 
 ```json
 { "name": "Launch assets" }
@@ -183,22 +235,22 @@ Bulk media IDs:
 { "mediaIds": ["00000000-0000-4000-8000-000000000001"] }
 ```
 
-Bulk tag payload:
+Bulk label payload:
 
 ```json
 {
   "mediaIds": ["00000000-0000-4000-8000-000000000001"],
-  "tagIds": ["00000000-0000-4000-8000-000000000002"]
+  "labelIds": ["00000000-0000-4000-8000-000000000002"]
 }
 ```
 
 Media constraints:
 
 - Update payloads must include at least one field.
-- Folder/tag names are required when creating.
-- Tag colors must be hex colors.
+- Folder/label names are required when creating.
+- Label colors must be hex colors.
 - Bulk media IDs require 1 to 100 IDs.
-- Tag ID lists require 1 to 50 IDs.
+- Label ID lists require 1 to 50 IDs.
 
 ## Approvals
 
@@ -234,7 +286,7 @@ Comment attachment init:
 
 ```json
 {
-  "postId": "00000000-0000-4000-8000-000000000001",
+  "contentId": "00000000-0000-4000-8000-000000000001",
   "audience": "internal",
   "filename": "feedback.png",
   "contentType": "image/png",
@@ -256,7 +308,7 @@ Client-only review batch:
 
 ```json
 {
-  "postIds": ["00000000-0000-4000-8000-000000000001"],
+  "contentIds": ["00000000-0000-4000-8000-000000000001"],
   "workflowMode": "client",
   "client": {
     "reviewers": [{ "name": "Client Reviewer", "email": "reviewer@example.com" }],
@@ -271,7 +323,7 @@ Internal then client review:
 
 ```json
 {
-  "postIds": ["00000000-0000-4000-8000-000000000001"],
+  "contentIds": ["00000000-0000-4000-8000-000000000001"],
   "workflowMode": "internal_client",
   "internal": {
     "approverIds": ["00000000-0000-4000-8000-000000000002"],
@@ -287,12 +339,12 @@ Internal then client review:
 Other client-review payloads:
 
 ```json
-{ "postId": "00000000-0000-4000-8000-000000000001" }
+{ "contentId": "00000000-0000-4000-8000-000000000001" }
 ```
 
 ```json
 {
-  "postId": "00000000-0000-4000-8000-000000000001",
+  "contentId": "00000000-0000-4000-8000-000000000001",
   "reason": "Approved outside the portal."
 }
 ```
